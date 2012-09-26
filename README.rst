@@ -14,6 +14,7 @@ This is my own config file for awesome_.
 
 ScreenShot:
 
+.. image:: http://i.minus.com/ibfu4HgE23Lf9U.png
 
 Files
 -----
@@ -77,8 +78,7 @@ Commands
 
    git clone git://github.com/Rykka/awesome.git ~/.config/awesome
    cd ~/.config/awesome
-   git submodule init
-   git submodule update
+   git clone git://github.com/Mic92/vicious.git 
    cp conf.lua.bak conf.lua
 
 KeyBinding
