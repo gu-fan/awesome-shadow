@@ -22,12 +22,13 @@ conf.MODKEY = "Mod4"
 
 -- startup programs here.
 -- e.g. 
--- { easystroke = "easystroke" }
-conf.STARTUP_PROGRAM = { }
+-- { easystroke = "easystroke" } or { 'easystroke'}
+conf.STARTUP_PROGRAM = { 'xcompmgr'}
 
 
 -- your app menu
 conf.MY_APP_MENU = {
+    { "&amule"      , "amule"           } ,
     { "&chrome"     , "google-chrome" , } ,
     { "&deluge"     , "deluge"          } ,
     { "&easystroke" , "easystroke"      } ,
@@ -36,13 +37,19 @@ conf.MY_APP_MENU = {
     { "&shutter"    , "shutter"       , } ,
     { "&virtualbox" , "virtualbox"      } ,
     { "&xchat"      , "xchat"           } ,
-    { "subl"        , "subl"            } ,
+    { "---------"   , ""                } ,
     { "gimp"        , "gimp"            } ,
     { "mypaint"     , "mypaint"         } ,
-    { "screenkey"   , "screenkey"         } ,
+    { "sublime2"    , "subl"            } ,
+    { "screenkey"   , "screenkey"       } ,
 }
 
 -- pictures (wallpaper)
-conf.wallpaper_cmd =  "awsetbg -r /home/rykk/Pictures/wallpaper/"
+conf.WALLPAPER_CMD = "awsetbg -r ~/Pictures/wallpaper"
 
+-- 'orange' or 'theme' for default
+conf.THEME = "theme"
 
+-- unfocused client with transparency
+-- Note: You need a running compositor such as xcompmgr or cairo-compmgr. 
+conf.TRANSPARENCY = 0.7

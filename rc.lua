@@ -1,50 +1,16 @@
--- TODO
+-- TODO : --{{{
 -- Advancing the awesome wm.
 --
--- 0. Useful Widgets. Tidy Interface.
+--  0. Useful Widgets. Tidy Interface.
 --
--- 1. Widgets
---    screen/tag/client/layout
---    menu/lauchers/tray icon(adding while running)/starter
---    client bar/close/minimize/ maximized (current client)
+--  1. Widgets
+--    calendar/todo
+--    autohiding bar
 --
---    system: cpu mem disk net
---    audio/music player/ lyric
---    time/date/calendar/todo
---
--- 2. Mappings
---    alt + tab (client tab)
---    win + tab (tag tab)
---    win:  + jk (moving between clients)
---          + sft + jk (shifting to clients pos )
---          + hl   (moving between tags)
---          + sft + hl (shifting to tags)
---          + np   (screens)
---          + sft + np   (shifting to screens)
---
---          F1~F12 (apps)
---
---          + ` (minimize)
---          + q (minimize)
---          + ctrl + ` (restore minimize)
---          + <Space> (toggle Floating)
---          + ctrl + <Space> (toggle fullscreen)
---
---          + w (menu)
---          + x (xkill)
---          + r (refresh)
---          + ctrl + r (restart awesome)
---
---          + pgup (vol up)
---          + pgdn (vol dn)
---
---          + up/down ( layout switch)
---
---          + alt + del (quit awesome)
+--  2. Mappings , add KeyDoc
 --
 --  3. theme
 --
---      autohiding bar
 --      several theme color switch
 --
 --      icon set.
@@ -61,13 +27,12 @@
 --
 --  4. configureable and seperate config file. (rc.conf)
 --      show/hide widgets,bars
---      apps
---      mapping set.
 
 --  5. extensive,
 --      API?
---
--- Standard awesome library
+--}}}
+
+-- Libraries --{{{
 -- /usr/share/awesome/
 require("awful")
 require("awful.autofocus")
@@ -79,24 +44,36 @@ require("beautiful")
 require("naughty")
 vicious = require('vicious')
 
-
 local keydoc = require("keydoc")
 -- seperate settings
 require('conf')
--- {{{ Functions
+--}}}
 
+--{{{ Load Vars
 terminal = conf.TERMINAL
 editor = conf.EDITOR
 browser =  conf.BROWSER
 file_manager = conf.FILE_MANAGER
 modkey = conf.MODKEY
+theme = conf.THEME
+transparency = conf.TRANSPARENCY
 
 config_dir = awful.util.getdir("config")
-beautiful.init(config_dir .. "/".."themes/default/theme.lua")
+
+function init_theme(theme) --{{{
+    local config_dir = config_dir
+    beautiful.init(config_dir .. "/".."themes/default/" 
+        .. tostring(theme) .. ".lua")
+end --}}}
+
+init_theme(theme)
 
 local exes = awful.util.spawn_with_shell
 local exec = awful.util.spawn
-exes(conf.wallpaper_cmd)
+--exes(conf.wallpaper_cmd)
+--}}}
+
+-- {{{ Functions
 
 function merge_table(t1,t2) --{{{
     -- merge two table of {{1,2}, {2,3}}
@@ -128,9 +105,9 @@ function dbg(vars) --{{{
     for i=1, #vars do text = text .. tostring(vars[i]) .. " | " end
     naughty.notify({ text = text, timeout = 0 })
 end --}}}
-function echo (arg)
+function echo (arg) --{{{
     naughty.notify({text=tostring(arg)})
-end
+end --}}}
 background_timers = {}
 function run_background(cmd,funtocall) --{{{
    local r = io.popen("mktemp")
@@ -175,7 +152,8 @@ function usefuleval(s) --{{{
 				if type(k) == "number" and k > highest_index then
 					highest_index = k;
 				end
-				ret[k] = select(2, pcall(tostring, ret[k])) or "<no value>";
+				ret[k] = select(2, pcall(tostring, ret[k])) 
+                    or "<no value>";
 			end
 			-- Fill in the gaps
 			for i = 1, highest_index do
@@ -184,18 +162,28 @@ function usefuleval(s) --{{{
 				end
 			end
 			if highest_index > 0 then
-                naughty.notify({ text=awful.util.escape("Result"..(highest_index > 1 and "s" or "")..": "..
-                                tostring(table.concat(ret, ", ")))
-                        , screen = mouse.screen ,title="Lua eval",position="top_left"})
+                naughty.notify({ 
+                    text = awful.util.escape("Result" ..
+                        (highest_index > 1 and "s" or "") .. ": " ..
+                        tostring(table.concat(ret, ", "))),
+                    screen = mouse.screen,
+                    title="Lua eval", 
+                    position="top_left"})
             else
-                naughty.notify({ text="Result: Nothing" , screen = mouse.screen ,title="Lua eval",position="top_left"})
+                naughty.notify({ text="Result: Nothing",
+                    screen = mouse.screen,
+                    title="Lua eval",
+                    position="top_left"})
 			end
 		else
 			err = ret[2];
 		end
 	end
 	if err then
-        naughty.notify({ text=awful.util.escape("Error: "..tostring(err)) , screen = mouse.screen ,title="Lua eval",position="top_left"})
+        naughty.notify({ 
+            text = awful.util.escape("Error: "..tostring(err)),
+            screen = mouse.screen, title="Lua eval",
+            position="top_left"})
 	end
 end --}}}
 -- }}}
@@ -204,9 +192,10 @@ end --}}}
 -- Check if awesome encountered an error during startup and fell back to
 -- another config (This code will only ever execute for the fallback config)
 if awesome.startup_errors then
-    naughty.notify({ preset = naughty.config.presets.critical,
-                     title = "Oops, there were errors during startup!",
-                     text = awesome.startup_errors })
+    naughty.notify({ 
+        preset = naughty.config.presets.critical,
+        title = "Oops, there were errors during startup!",
+        text = awesome.startup_errors })
 end
 
 -- Handle runtime errors after startup
@@ -219,19 +208,19 @@ do
 
         naughty.notify({ preset = naughty.config.presets.critical,
                          title = "Oops, an error happened!",
-                         text = err })
+                         text = tostring(err) })
         in_error = false
     end)
 end
 -- }}}
 
+
+
 -- {{{ Variable definitions
 -- Themes define colours, icons, and wallpapers
 
-
 -- Table of layouts to cover with awful.layout.inc, order matters.
-layouts =
-{
+layouts = {
     awful.layout.suit.floating,
     awful.layout.suit.tile,
     awful.layout.suit.tile.left,
@@ -307,8 +296,9 @@ local exmenu = {
 mymainmenu = awful.menu({ items = exmenu
                         })
 
-mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
-                                     menu = mymainmenu })
+mylauncher = awful.widget.launcher({ 
+    image = image(beautiful.awesome_icon),
+    menu = mymainmenu })
 
 -- }}}
 
@@ -317,23 +307,27 @@ mylauncher = awful.widget.launcher({ image = image(beautiful.awesome_icon),
 function span(text,color,...) --{{{
     local color = color or "White"
     local fontsize = arg[1] or 13
-    return "<span font='bold "..fontsize.."' foreground='".. color .."'> " .. text .. " </span>"
+    return "<span font='bold " .. fontsize .. 
+        "' foreground='".. color .."'> " .. 
+        text .. " </span>"
 end --}}}
 
 -- Bottom panel show/hide --{{{
 local my_bot_toggle = widget({type='textbox'})
 my_bot_toggle.text = span('◈','White',18)
 my_bot_toggle:buttons(awful.util.table.join(
-    awful.button({ }, 1, function()
-        mybotwibox[mouse.screen].visible = not mybotwibox[mouse.screen].visible 
-
+    awful.button({ }, 1, 
+    function()
+        mybotwibox[mouse.screen].visible = 
+            not mybotwibox[mouse.screen].visible 
     end)
 ))
 local my_bot_toggle_t = awful.tooltip({
-objects = { my_bot_toggle },
-timer_function = function()
-    return "Toggle Bottom Panel "
-end,
+    objects = { my_bot_toggle },
+    timer_function = 
+    function()
+        return "Toggle Bottom Panel "
+    end,
 })
 --}}}
 
@@ -346,10 +340,10 @@ my_client_kill:buttons(awful.util.table.join(
     end)
 ))
 local my_client_kill_t  = awful.tooltip({
-objects = { my_client_kill },
-timer_function = function()
-    return "Kill:" .. client.focus.name
-end,
+    objects = { my_client_kill },
+    timer_function = function()
+        return "Kill:" .. client.focus.name
+    end,
 }) --}}}
 
 -- {{{ separator
@@ -393,9 +387,10 @@ mytextclock = awful.widget.textclock({ align = "right" }," %H:%M ")
 --mytextclock:add_signal("mouse::leave", remove_calendar)
 local mytextclock_t  = awful.tooltip({
 objects = { mytextclock },
-timer_function = function()
-return string.format("%s", os.date("%a, %d %B %Y"))
-end,
+timer_function = 
+    function()
+        return string.format("%s", os.date("%a, %d %B %Y"))
+    end,
 })
 --}}}
 -- {{{ CPU load
@@ -407,10 +402,12 @@ end)
 
 local cpuwidget_t  = awful.tooltip({
 objects = { cpuwidget },
-timer_function = function()
-    local args = vicious.widgets.cpu()
-    return string.format("CPU Detail:\n1:\t%2d%%\n2:\t%2d%%\n3:\t%2d%%\n4:\t%2d%%",args[2],args[3],args[4],args[5])
-end,
+timer_function = 
+    function()
+        local args = vicious.widgets.cpu()
+        return string.format("CPU Detail:\n1:\t%2d%%\n2:\t%2d%%\n3:\t%2d%%\n4:\t%2d%%",
+        args[2],args[3],args[4],args[5])
+    end,
 })
 -- }}}
 -- {{{ Mem load
@@ -424,7 +421,8 @@ local memwidget_t  = awful.tooltip({
 objects = { memwidget },
 timer_function = function()
     local args = vicious.widgets.mem()
-    return string.format("Memory Detail:\nTotal Mem:\t%s\nMem Used:\t%s\nFree Mem:\t%s\nSwap Used:\t%s",args[3],args[2],args[4],args[6])
+    return string.format("Memory Detail:\nTotal Mem:\t%s\nMem Used:\t%s\nFree Mem:\t%s\nSwap Used:\t%s", 
+        args[3],args[2],args[4],args[6])
 end,
 })
 -- }}}
@@ -445,7 +443,7 @@ function voltext(vol,mute) --{{{
         local v = tonumber(vol)
         if v >= 100 then
             return span("♬")
-        elseif v >= 70 then
+        elseif v >= 60 then
             return span("♫")
         elseif v >= 30 then
             return span("♪")
@@ -500,14 +498,17 @@ end,
 uptimewidget = widget({ type = "textbox" })
 vicious.register(uptimewidget, vicious.widgets.uptime,
         function (widget, args)
-            return string.format(span("⟳").."%2dh%2dm", args[2], args[3])
+            return string.format(span("⟳").."%2dh%2dm", 
+                args[2], args[3])
         end, 61)
 uptime_t  = awful.tooltip({
 objects = { uptimewidget },
-timer_function = function()
-    local args = vicious.widgets.uptime()
-    return string.format("Uptime:\n%dd %2dh %2dm", args[1], args[2], args[3])
-end,
+timer_function = 
+    function()
+        local args = vicious.widgets.uptime()
+        return string.format("Uptime:\n%dd %2dh %2dm", 
+            args[1], args[2], args[3])
+    end,
 })
 --}}}
 -- {{{ Lyric
@@ -551,40 +552,42 @@ end
 -- Initialize widget
 local mpdwidget = widget({ type = "textbox" })
 -- Register widget
--- FIXED: 2012-05-30 it could not catch the pause state
 vicious.register(mpdwidget, vicious.widgets.mpd,
-        function (widget, args)
-            if args["{state}"] == "Stop"  then
-                return span("■ ") .. "Stopped"
-            else
-                local cmdf = io.popen("mpc")
-                local txt = ""
+    function (widget, args)
+        if args["{state}"] == "Stop" then
+            return span("■ ") .. "Stopped"
+        else
+            local cmdf = io.popen("mpc")
+            local txt = ""
 
-                if cmdf == nil then
-                    txt =  span("▶ ")   .. args["{Artist}"]..' - '.. args["{Title}"]
-                else
-                    local i = 1
-                    for line in cmdf:lines() do
-                        if i == 2 then
-                            for w in string.gmatch(line, "%[%a+%]") do
-                                if w == "[paused]" then
-                                    txt = span("❚❚")   .. args["{Artist}"]..' - '.. args["{Title}"]
-                                    break
-                                end
-                            end
+            if cmdf == nil then
+                txt = span("▶ ") .. args["{Artist}"] .. 
+                    ' - '.. args["{Title}"]
+            else
+                local i = 1
+                for line in cmdf:lines() do
+                    if i == 2 then
+                        w = string.find(line, "%[paused%]")
+                        if w then
+                            txt = span("❚❚") .. args["{Artist}"] .. 
+                                ' - '.. args["{Title}"]
                         end
-                        i = i + 1
+                        break
                     end
-                end
-                cmdf:close()
-                if txt == "" then
-                    return span("▶ ")   .. args["{Artist}"]..' - '.. args["{Title}"]
-                else
-                    return txt
+                    i = i + 1
                 end
             end
-        end,
-        10)
+            cmdf:close()
+
+            if txt == "" then
+                return span("▶ ") .. args["{Artist}"] ..
+                    ' - '.. args["{Title}"]
+            else
+                return txt
+            end
+        end
+    end,
+10)
 
 mpdwidget:buttons(awful.util.table.join(
     awful.button({ }, 1, function()
@@ -643,10 +646,24 @@ timer_function = function()
 end,
 })
 --}}}
--- battery  
+-- battery --{{{
 local batwidget = widget({ type = "textbox" })
-vicious.register(batwidget, vicious.widgets.bat, span("⊕").."$2", 61, "BAT0")
-
+vicious.register(batwidget, 
+    vicious.widgets.bat, 
+    function (wdiget, args)
+        return span("⊕")..args[2]
+    end, 
+61, "BAT0")
+battery_t = awful.tooltip({
+    objects = { batwidget },
+    timer_function = function()
+        local args = vicious.widgets.uptime()
+        return string.format(
+            "Battery:\n State:%s\nRemaining Time:%s",
+            args[1],args[3])
+    end,
+})
+--}}}
 
 -- dock
 -- Create a systray
@@ -720,17 +737,25 @@ for s = 1, screen.count() do
     -- We need one layoutbox per screen.
     mylayoutbox[s] = awful.widget.layoutbox(s)
     mylayoutbox[s]:buttons(awful.util.table.join(
-                           awful.button({ }, 1, function () awful.layout.inc(layouts, 1) end),
-                           awful.button({ }, 3, function () awful.layout.inc(layouts, -1) end),
-                           awful.button({ }, 4, function () awful.layout.inc(layouts, 1) end),
-                           awful.button({ }, 5, function () awful.layout.inc(layouts, -1) end)))
+        awful.button({ }, 1, 
+        function () awful.layout.inc(layouts, 1) end),
+        awful.button({ }, 3, 
+        function () awful.layout.inc(layouts, -1) end),
+        awful.button({ }, 4, 
+        function () awful.layout.inc(layouts, 1) end),
+        awful.button({ }, 5, 
+        function () awful.layout.inc(layouts, -1) end)
+    ))
     -- Create a taglist widget
-    mytaglist[s] = awful.widget.taglist(s, awful.widget.taglist.label.noempty, mytaglist.buttons)
+    mytaglist[s] = awful.widget.taglist(s, 
+        awful.widget.taglist.label.noempty, mytaglist.buttons)
 
     -- Create a tasklist widget
-    mytasklist[s] = awful.widget.tasklist(function(c)
-                            return awful.widget.tasklist.label.currenttags(c, s)
-                                          end, mytasklist.buttons)
+    mytasklist[s] = awful.widget.tasklist(
+        function(c)
+            return awful.widget.tasklist.label.currenttags(c, s)
+        end,
+    mytasklist.buttons)
 
     -- Create the wibox
     mywibox[s] = awful.wibox({ position = "top", screen = s })
@@ -780,86 +805,119 @@ root.buttons(awful.util.table.join(
 -- }}}
 -- {{{ Key bindings
 globalkeys = awful.util.table.join( --{{{
-    awful.key({ modkey, }, "c", keydoc.display, "Display Document"),
-    keydoc.group("Layout manipulation"),
-    awful.key({ }, "Print", function () 
-        local date =os.date("%Y_%m_%d-%H_%M_%S") 
-        local cmd =  "import -window root ~/Pictures/"..date..".png"
-        awful.util.spawn_with_shell(cmd) 
-        naughty.notify({text=cmd})
-    
-    end, "Print Screen"),
-    awful.key({ modkey,           }, "Escape",  awful.tag.history.restore),
-    awful.key({ modkey }, "Print", function () 
-        local date = os.date("%Y_%m_%d-%H_%M_%S")
-        local cmd =  "import ~/Pictures/"..date..".png"
-        awful.util.spawn_with_shell(cmd) 
-        naughty.notify({text=cmd})
-    end, "Capture Window"),
+    awful.key({ modkey, }, "c",
+        keydoc.display, "Display Document"),
 
-    awful.key({ modkey,           }, "h",   awful.tag.viewprev, "Prev Tag"       ),
-    awful.key({ modkey,           }, "l",   awful.tag.viewnext, "Next Tag"       ),
-    awful.key({ modkey, "Shift"   }, "h",       function () rel_movetag(-1) end, "Move to Prev Tag"),
-    awful.key({ modkey, "Shift"   }, "l",       function () rel_movetag(1)  end, "Move to Next Tag"),
-    awful.key({ modkey,           }, "Left",   awful.tag.viewprev, "Prev Tag"      ),
-    awful.key({ modkey,           }, "Right",  awful.tag.viewnext, "Next Tag"       ),
-    awful.key({ modkey, "Shift"   }, "Left",    function () rel_movetag(-1) end, "Move to Prev Tag"),
-    awful.key({ modkey, "Shift"   }, "Right",   function () rel_movetag(1)  end, "Move to Next Tag"),
+    keydoc.group("Layout manipulation"),
+
+    awful.key({ }, "Print", 
+        function () 
+            local date =os.date("%Y_%m_%d-%H_%M_%S") 
+            local cmd =  "import -window root ~/Pictures/"..date..".png"
+            awful.util.spawn_with_shell(cmd) 
+            naughty.notify({text=cmd})
+        end, "Print Screen"),
+    awful.key({ modkey,           }, "Escape", 
+        awful.tag.history.restore),
+    awful.key({ modkey }, "Print", 
+        function () 
+            local date = os.date("%Y_%m_%d-%H_%M_%S")
+            local cmd =  "import ~/Pictures/"..date..".png"
+            awful.util.spawn_with_shell(cmd) 
+            naughty.notify({text=cmd})
+        end, "Capture Window"),
+
+    awful.key({ modkey,           }, "h", 
+        awful.tag.viewprev, "Prev Tag"       ),
+    awful.key({ modkey,           }, "l", 
+        awful.tag.viewnext, "Next Tag"       ),
+    awful.key({ modkey, "Shift"   }, "h",       
+        function () rel_movetag(-1) end, "Move to Prev Tag"),
+    awful.key({ modkey, "Shift"   }, "l",       
+        function () rel_movetag(1)  end, "Move to Next Tag"),
+    awful.key({ modkey,           }, "Left",  
+        awful.tag.viewprev, "Prev Tag"      ),
+    awful.key({ modkey,           }, "Right", 
+        awful.tag.viewnext, "Next Tag"       ),
+    awful.key({ modkey, "Shift"   }, "Left",  
+        function () rel_movetag(-1) end, "Move to Prev Tag"),
+    awful.key({ modkey, "Shift"   }, "Right",
+        function () rel_movetag(1)  end, "Move to Next Tag"),
 
     keydoc.group("Moving Between Clients"),
-    awful.key({ modkey,           }, "Tab", awful.tag.viewnext, "View Next"),
-    awful.key({ "Mod1",           }, "Tab", function ()
+    awful.key({ modkey,           }, "Tab",
+        awful.tag.viewnext, "View Next"),
+    awful.key({ "Mod1",           }, "Tab",
+        function ()
             awful.client.focus.byidx( 1)
             if client.focus then client.focus:raise() end
         end),
-    awful.key({ "Mod1","Shift"           }, "Tab", function ()
+    awful.key({ "Mod1","Shift"           }, "Tab", 
+        function ()
             awful.client.focus.byidx(-1)
             if client.focus then client.focus:raise() end
         end),
-    awful.key({ modkey,           }, "j", function ()
+    awful.key({ modkey,           }, "j", 
+        function ()
             awful.client.focus.byidx( 1)
             if client.focus then client.focus:raise() end
         end, "Next Client"),
-    awful.key({ modkey,           }, "k", function ()
+    awful.key({ modkey,           }, "k", 
+        function ()
             awful.client.focus.byidx(-1)
             if client.focus then client.focus:raise() end
         end, "Prev Client"),
-    awful.key({ modkey,           }, "Up", function ()
+    awful.key({ modkey,           }, "Up",
+        function ()
             awful.client.focus.byidx( 1)
             if client.focus then client.focus:raise() end
         end, "Next Client"),
-    awful.key({ modkey,           }, "Down", function ()
+    awful.key({ modkey,           }, "Down", 
+        function ()
             awful.client.focus.byidx(-1)
             if client.focus then client.focus:raise() end
         end, "Prev Client"),
-    awful.key({ modkey, "Shift"   }, "j", function () awful.client.swap.byidx(  1)    end, "Shift to Next"),
-    awful.key({ modkey, "Shift"   }, "k", function () awful.client.swap.byidx( -1)    end, "Shift to Prev"),
-    awful.key({ modkey, "Shift"   }, "Up", function () awful.client.swap.byidx(  1)    end, "Shift to Next"),
-    awful.key({ modkey, "Shift"   }, "Down", function () awful.client.swap.byidx( -1)    end, "Shift to Prev"),
+    awful.key({ modkey, "Shift"   }, "j", 
+    function () awful.client.swap.byidx(  1) end, "Shift to Next"),
+    awful.key({ modkey, "Shift"   }, "k", 
+    function () awful.client.swap.byidx( -1) end, "Shift to Prev"),
+    awful.key({ modkey, "Shift"   }, "Up", 
+    function () awful.client.swap.byidx(  1) end, "Shift to Next"),
+    awful.key({ modkey, "Shift"   }, "Down",
+    function () awful.client.swap.byidx( -1) end, "Shift to Prev"),
 
-    awful.key({ modkey, "Control" }, "n", function () awful.screen.focus_relative( 1) end),
-    awful.key({ modkey, "Control" }, "p", function () awful.screen.focus_relative(-1) end),
-    awful.key({ modkey,           }, "u", awful.client.urgent.jumpto),
+    awful.key({ modkey, "Control" }, "n", 
+    function () awful.screen.focus_relative( 1) end),
+    awful.key({ modkey, "Control" }, "p",
+    function () awful.screen.focus_relative(-1) end),
+    awful.key({ modkey,           }, "u",
+        awful.client.urgent.jumpto),
     awful.key({ modkey }, "b", function ()
         mybotwibox[mouse.screen].visible = not mybotwibox[mouse.screen].visible 
     end, "Toggle Bottom Panel"),
 
 
     keydoc.group("Audio Control"),
-    awful.key({ modkey,           }, "Page_Up",   function() exes("pamixer --increase 4") end, "Volume Up"),
-    awful.key({ modkey,           }, "Page_Down", function() exes("pamixer --decrease 4") end, "Volume Down"),
+    awful.key({ modkey,           }, "Page_Up",   
+    function() exes("pamixer --increase 4") end, "Volume Up"),
+    awful.key({ modkey,           }, "Page_Down",
+    function() exes("pamixer --decrease 4") end, "Volume Down"),
 
-    awful.key({ modkey,           }, "Home",   function() exes("mpc prev")
-                vicious.force({ mpdwidget, })
-            end, "Prev Sone"),
-    awful.key({ modkey,           }, "End",    function() exes("mpc next")
-                vicious.force({ mpdwidget, })
-            end, "Next Song"),
-    awful.key({ modkey,           }, "Insert", function()
-                exes("mpc toggle")
-                vicious.force({ mpdwidget, })
-            end, "Toggle Play"),
-    awful.key({ modkey,           }, "Delete", function() exes("pamixer --toggle-mute") end, "Mute Song"),
+    awful.key({ modkey,           }, "Home",   
+        function() exes("mpc prev")
+            vicious.force({ mpdwidget, })
+        end, "Prev Sone"),
+    awful.key({ modkey,           }, "End",    
+        function() exes("mpc next")
+            vicious.force({ mpdwidget, })
+        end, "Next Song"),
+    awful.key({ modkey,           }, "Insert", 
+        function()
+            exes("mpc toggle")
+            vicious.force({ mpdwidget, })
+        end, "Toggle Play"),
+    awful.key({ modkey,           }, "Delete", 
+    function() exes("pamixer --toggle-mute") end, "Mute Song"),
 
     awful.key({ modkey, "Control" }, "`", awful.client.restore),
     awful.key({ modkey, "Control" }, "q", awful.client.restore),
@@ -868,44 +926,64 @@ globalkeys = awful.util.table.join( --{{{
 
     -- Standard program
     keydoc.group("Programs"),
-    awful.key({ modkey,           }, "w",  function () mymainmenu:show({keygrabber=true}) end , "Show App Menu"),
-    awful.key({ modkey,           }, "F1", function () awful.util.spawn(terminal)         end ),
-    awful.key({ modkey,           }, "F2", function () exec(editor)                       end ),
-    awful.key({ modkey,           }, "F3", function () exec(browser)                    end ),
-    awful.key({ modkey,           }, "F4", function () exec(file_manager)              end ),
+    awful.key({ modkey,           }, "w",  
+    function () mymainmenu:show({keygrabber=true}) end , "Show App Menu"),
+    awful.key({ modkey,           }, "F1", 
+    function () awful.util.spawn(terminal)         end ),
+    awful.key({ modkey,           }, "F2", 
+    function () exec(editor)                       end ),
+    awful.key({ modkey,           }, "F3", 
+    function () exec(browser)                    end ),
+    awful.key({ modkey,           }, "F4", 
+    function () exec(file_manager)              end ),
     awful.key({ modkey, "Control" }, "r", awesome.restart),
 
-    awful.key({ modkey,           }, "=",  function () awful.tag.incmwfact( 0.05)    end),
-    awful.key({ modkey,           }, "-",  function () awful.tag.incmwfact(-0.05)    end),
-    awful.key({ modkey, "Shift"   }, "=",  function () awful.tag.incnmaster( 1)      end),
-    awful.key({ modkey, "Shift"   }, "-",  function () awful.tag.incnmaster(-1)      end),
-    awful.key({ modkey, "Control" }, "=",  function () awful.tag.incncol( 1)         end),
-    awful.key({ modkey, "Control" }, "-",  function () awful.tag.incncol(-1)         end),
-    awful.key({ modkey,           }, "]",  function () awful.layout.inc(layouts,  1) end),
-    awful.key({ modkey,           }, "[",  function () awful.layout.inc(layouts, -1) end),
+    awful.key({ modkey,           }, "=",  
+    function () awful.tag.incmwfact( 0.05)    end),
+    awful.key({ modkey,           }, "-",  
+    function () awful.tag.incmwfact(-0.05)    end),
+    awful.key({ modkey, "Shift"   }, "=",  
+    function () awful.tag.incnmaster( 1)      end),
+    awful.key({ modkey, "Shift"   }, "-",  
+    function () awful.tag.incnmaster(-1)      end),
+    awful.key({ modkey, "Control" }, "=",  
+    function () awful.tag.incncol( 1)         end),
+    awful.key({ modkey, "Control" }, "-",  
+    function () awful.tag.incncol(-1)         end),
+    awful.key({ modkey,           }, "]",  
+    function () awful.layout.inc(layouts,  1) end),
+    awful.key({ modkey,           }, "[", 
+    function () awful.layout.inc(layouts, -1) end),
 
 
      --Prompt
-    awful.key({ modkey, }, "r",
-              function ()
-                  awful.prompt.run({ prompt = "<span color='#BF7900'>Lua:</span>" ,
+    awful.key({ modkey, "Shift" }, "r",
+        function ()
+            awful.prompt.run({ 
+                prompt = "<span color='#BF7900'>Lua:</span>" ,
+                font="Monaco bold 12"},
+            mypromptbox[mouse.screen].widget,
+            usefuleval, nil,
+            awful.util.getdir("cache") .. "/history_eval")
+        end, 
+    "Run Lua Code"),
+    awful.key({ modkey,    }, "r",   
+        function () 
+            --mypromptbox[mouse.screen]:run({prompt="R:"}) 
+            awful.prompt.run({ 
+                    prompt = "<span color='#00A5AB'>Run:</span>" , 
                     font="Monaco bold 12"},
-                  mypromptbox[mouse.screen].widget,
-                  usefuleval, nil,
-                  awful.util.getdir("cache") .. "/history_eval")
-              end, "Run Lua Code"),
-    awful.key({ modkey,  "Shift"  }, "r",     function () 
-        --mypromptbox[mouse.screen]:run({prompt="R:"}) 
-                awful.prompt.run({ prompt = "<span color='#00A5AB'>Bash:</span>" , 
-                    font="Monaco bold 12"},
-                mypromptbox[mouse.screen].widget,
-                function (...) 
-                    awful.util.spawn(terminal .. " -e " .. ...) 
-                end,
-                awful.completion.shell,
-                awful.util.getdir("cache") .. "/history")
-            end,"Run in Terminal")
-
+            mypromptbox[mouse.screen].widget,
+            function (...) 
+                text = awful.util.spawn( ... ) 
+                naughty.notify({ text = tostring(text),
+                timeout = 10 ,position='top_left', 
+                title='BASH:'})
+            end,
+            awful.completion.shell,
+            awful.util.getdir("cache") .. "/history")
+        end,
+    "Run in Terminal")
 )
 --}}}
 clientkeys = awful.util.table.join( --{{{
@@ -954,35 +1032,36 @@ end
 for i = 1, keynumber do
     globalkeys = awful.util.table.join(globalkeys,
         awful.key({ modkey }, "#" .. i + 9,
-                  function ()
-                        local screen = mouse.screen
-                        if tags[screen][i] then
-                            awful.tag.viewonly(tags[screen][i])
-                        end
-                  end),
+            function ()
+                local screen = mouse.screen
+                if tags[screen][i] then
+                    awful.tag.viewonly(tags[screen][i])
+                end
+            end),
         awful.key({ modkey, "Control" }, "#" .. i + 9,
-                  function ()
-                      local screen = mouse.screen
-                      if tags[screen][i] then
-                          awful.tag.viewtoggle(tags[screen][i])
-                      end
-                  end),
+            function ()
+                local screen = mouse.screen
+                if tags[screen][i] then
+                    awful.tag.viewtoggle(tags[screen][i])
+                end
+            end),
         awful.key({ modkey, "Shift" }, "#" .. i + 9,
-                  function ()
-                      if client.focus and tags[client.focus.screen][i] then
-                          awful.client.movetotag(tags[client.focus.screen][i])
-                      end
-                  end),
+            function ()
+                if client.focus and tags[client.focus.screen][i] then
+                    awful.client.movetotag(tags[client.focus.screen][i])
+                end
+            end),
         awful.key({ modkey, "Control", "Shift" }, "#" .. i + 9,
-                  function ()
-                      if client.focus and tags[client.focus.screen][i] then
-                          awful.client.toggletag(tags[client.focus.screen][i])
-                      end
-                  end))
+            function ()
+                if client.focus and tags[client.focus.screen][i] then
+                    awful.client.toggletag(tags[client.focus.screen][i])
+                end
+            end))
 end
 
 clientbuttons = awful.util.table.join(
-    awful.button({ }, 1, function (c) client.focus = c; c:raise() end),
+    awful.button({ }, 1, 
+        function (c) client.focus = c; c:raise() end),
     awful.button({ modkey }, 1, awful.mouse.client.move),
     awful.button({ modkey }, 3, awful.mouse.client.resize))
 
@@ -1009,10 +1088,8 @@ awful.rules.rules = {
       properties = { floating = true } },
     { rule = { class = "gimp" },
       properties = { floating = true } },
-    { rule = { class = "screenkey" },
-      properties = { floating = true } },
     { rule = { instance = "screenkey" },
-      properties = { floating = true,x=100, y=600, width=900,height=80 } },
+      properties = { floating = true, x=100, y=800, width=900,height=80 } },
     { rule = { class = "goldendict" },
       properties = { floating = true } },
     { rule = { class = "cairo-dock" },
@@ -1026,17 +1103,19 @@ awful.rules.rules = {
 -- }}}
 -- {{{ Signals
 -- Signal function to execute when a new client appears.
-client.add_signal("manage", function (c, startup)
-    -- Add a titlebar
-    -- awful.titlebar.add(c, { modkey = modkey })
+client.add_signal("manage", 
+    function (c, startup)
+        -- Add a titlebar
+        -- awful.titlebar.add(c, { modkey = modkey })
 
-    -- Enable sloppy focus
-    c:add_signal("mouse::enter", function(c)
-        if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
-            and awful.client.focus.filter(c) then
-            client.focus = c
-        end
-    end)
+        -- Enable sloppy focus
+        c:add_signal("mouse::enter", 
+            function(c)
+                if awful.layout.get(c.screen) ~= awful.layout.suit.magnifier
+                    and awful.client.focus.filter(c) then
+                    client.focus = c
+                end
+            end)
 
     if not startup then
         -- Set the windows at the slave,
@@ -1044,39 +1123,72 @@ client.add_signal("manage", function (c, startup)
         -- awful.client.setslave(c)
 
         -- Put windows in a smart way, only if they does not set an initial position.
-        if not c.size_hints.user_position and not c.size_hints.program_position then
+        if not c.size_hints.user_position 
+            and not c.size_hints.program_position then
             awful.placement.no_overlap(c)
             awful.placement.no_offscreen(c)
         end
     end
 end)
 
---client.add_signal("focus", function(c) c.border_color = beautiful.border_focus end)
---client.add_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
-client.add_signal("focus", function(c)
-                              c.border_color = beautiful.border_focus
-                              --c.opacity = 1
-                           end)
-client.add_signal("unfocus", function(c)
-                                c.border_color = beautiful.border_normal
-                                --c.opacity = 1
-                             end)
+client.add_signal("focus", 
+    function(c)
+        c.border_color = beautiful.border_focus
+        c.opacity = 1
+    end)
+client.add_signal("unfocus", 
+    function(c)
+        c.border_color = beautiful.border_normal
+        c.opacity = transparency
+    end)
 -- }}}
 
 -- {{{ autosart
+background_timers = {}                                                             
+                                                                                  
+function run_background(cmd,funtocall) --{{{
+   local r = io.popen("mktemp")                                                   
+   local logfile = r:read("*line")                                                
+   r:close()                                                                      
+                                                                                  
+   cmdstr = cmd .. " &> " .. logfile .. " & "                                     
+   local cmdf = io.popen(cmdstr)                                                  
+   cmdf:close()                                                                   
+   background_timers[cmd] = {                                                     
+       file  = logfile,                                                           
+       timer = timer{timeout=1}                                                   
+   }                                                                              
+   background_timers[cmd].timer:add_signal("timeout",function()                   
+       local cmdf = io.popen("pgrep -f '" .. cmd .. "'")                          
+       local s = cmdf:read("*all")                                                
+       cmdf:close()                                                               
+       if (s=="") then                                                            
+           background_timers[cmd].timer:stop()                                    
+           local lf = io.open(background_timers[cmd].file)                        
+           funtocall(lf:read("*all"))                                             
+           lf:close()
+           io.popen("rm " .. background_timers[cmd].file)                                                            
+       end                                                                        
+   end)                                                                           
+   background_timers[cmd].timer:start()                                           
+end --}}}
 function run_once(cmd) --{{{
-  findme = cmd
-  firstspace = cmd:find(" ")
-  if firstspace then
-    findme = cmd:sub(0, firstspace-1)
-  end
+    findme = cmd
+    firstspace = cmd:find(" ")
+    if firstspace then
+        findme = cmd:sub(0, firstspace-1)
+    end
+    exes("pgrep -u $USER -x " .. findme ..
+        " > /dev/null || (" .. cmd .. ")")
 end --}}}
 do
     local cmds = conf.STARTUP_PROGRAM
 
     for _,prg in pairs(cmds) do
+        naughty.notify({text=prg})
         run_once(prg)
     end
 end
 -- }}}
 
+exes(conf.wallpaper_cmd)

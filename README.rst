@@ -7,7 +7,9 @@
 INTRO
 =====
 
-This is my own config file for awesome_.
+This is my config file for awesome_.
+
+Dark theme.
 
 .. _awesome: http://awesome.naquadah.org/
 
