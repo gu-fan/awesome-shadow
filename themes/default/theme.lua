@@ -2,7 +2,7 @@
 -- Default awesome theme --
 ---------------------------
 
-require("awful")
+local awful = require("awful")
 config_dir = awful.util.getdir("config")
 
 theme = {}
@@ -34,8 +34,8 @@ theme.border_marked = "#CC2A1F"
 -- Example:
 theme.tasklist_bg_focus = "#6B7585"
 theme.taglist_bg_focus = "#575D66"
-theme.tooltip_fg_color = "#323329"
-theme.tooltip_bg_color = "#FCFFCC"
+theme.tooltip_fg_color = "#F2FF80"
+theme.tooltip_bg_color = "#1F3799"
 theme.tooltip_border_width = 1
 -- Display the taglist squares
 theme.taglist_squares_sel   = "/usr/share/awesome/themes/default/taglist/squarefw.png"

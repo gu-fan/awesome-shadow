@@ -45,11 +45,13 @@ conf.MY_APP_MENU = {
 }
 
 -- pictures (wallpaper)
-conf.WALLPAPER_CMD = "awsetbg -r ~/Pictures/wallpaper"
+conf.WALLPAPER_CMD = "feh --bg-scale -z ~/Pictures/wallpaper"
+
 
 -- 'orange' or 'theme' for default
 conf.THEME = "theme"
 
 -- unfocused client with transparency
 -- Note: You need a running compositor such as xcompmgr or cairo-compmgr. 
-conf.TRANSPARENCY = 0.7
+conf.TRANSPARENCY = 1.0
+return conf

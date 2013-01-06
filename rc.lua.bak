@@ -36,7 +36,7 @@
 -- /usr/share/awesome/
 local awful = require("awful")
 require("awful.autofocus")
-awful.rules = require("awful.rules")
+awful.rulse = require("awful.rules")
 require("awful.tag")
 -- Theme handling library
 local beautiful = require("beautiful")
@@ -267,7 +267,6 @@ myawesomemenu = {
   { "version " .. awesome.version , " " },
   { "&manual", editor .. " '+Man awesome'" },
   { "&edit config", editor .. " " .. awesome.conffile },
-  { "&wallpaper", conf.WALLPAPER_CMD },
   { "----------", " "},
   { "&restart", awesome.restart },
   { "&quit", awesome.quit },
@@ -296,7 +295,7 @@ local exmenu = {
 mymainmenu = awful.menu({ items = exmenu })
 
 mylauncher = awful.widget.launcher({ 
-    image = beautiful.awesome_icon,
+    --image = image(beautiful.awesome_icon),
     menu = mymainmenu })
 
 awful.menu.menu_keys = { up    = { "k", "Up" },
@@ -310,8 +309,8 @@ awful.menu.menu_keys = { up    = { "k", "Up" },
                        }
 -- }}}
 
----- {{{ Wibox widgets
---
+-- {{{ Wibox widgets
+
 function span(text,color,...) --{{{
     local color = color or "White"
     local fontsize = 13
@@ -319,50 +318,50 @@ function span(text,color,...) --{{{
         "' foreground='".. color .."'> " .. 
         text .. " </span>"
 end --}}}
---
----- Bottom panel show/hide --{{{
-----local my_bot_toggle = widget({type='textbox'})
---local my_bot_toggle = wibox.widget.textbox()
---my_bot_toggle:set_text(span('◈','White',18))
---my_bot_toggle:buttons(awful.util.table.join(
---    awful.button({ }, 1, 
---    function()
---        mybotwibox[mouse.screen].visible = 
---            not mybotwibox[mouse.screen].visible 
---    end)
---))
---local my_bot_toggle_t = awful.tooltip({
---    objects = { my_bot_toggle },
---    timer_function = 
---    function()
---        return "Toggle Bottom Panel "
---    end,
---})
-----}}}
---
----- client killer --{{{
---local my_client_kill = wibox.widget.textbox()
---my_client_kill:set_text(span('X'))
---my_client_kill:buttons(awful.util.table.join(
---    awful.button({ }, 1, function()
---        client.focus:kill()
---    end)
---))
---local my_client_kill_t  = awful.tooltip({
---    objects = { my_client_kill },
---    timer_function = function()
---        return "Kill:" .. client.focus.name
---    end,
---}) --}}}
---
----- {{{ separator
---local spacer = wibox.widget.textbox({name='spacer'})
---local separator = wibox.widget.textbox({ name = "separator" })
---spacer:set_text( "  ")
---separator:set_text( span("•","Gray"))
----- }}}
+
+-- Bottom panel show/hide --{{{
+--local my_bot_toggle = widget({type='textbox'})
+local my_bot_toggle = wibox.widget.textbox()
+my_bot_toggle:set_text(span('◈','White',18))
+my_bot_toggle:buttons(awful.util.table.join(
+    awful.button({ }, 1, 
+    function()
+        mybotwibox[mouse.screen].visible = 
+            not mybotwibox[mouse.screen].visible 
+    end)
+))
+local my_bot_toggle_t = awful.tooltip({
+    objects = { my_bot_toggle },
+    timer_function = 
+    function()
+        return "Toggle Bottom Panel "
+    end,
+})
+--}}}
+
+-- client killer --{{{
+local my_client_kill = wibox.widget.textbox()
+my_client_kill:set_text(span('X'))
+my_client_kill:buttons(awful.util.table.join(
+    awful.button({ }, 1, function()
+        client.focus:kill()
+    end)
+))
+local my_client_kill_t  = awful.tooltip({
+    objects = { my_client_kill },
+    timer_function = function()
+        return "Kill:" .. client.focus.name
+    end,
+}) --}}}
+
+-- {{{ separator
+local spacer = wibox.widget.textbox({name='spacer'})
+local separator = wibox.widget.textbox({ name = "separator" })
+spacer:set_text( "  ")
+separator:set_text( span("•","Gray"))
+-- }}}
 -- {{{ Textclock
-mytextclock = awful.widget.textclock(" %H:%M ")
+mytextclock = awful.widget.textclock({ align = "right" }," %H:%M ")
 --local calendar = nil
 --local offset = 0
 --
@@ -402,48 +401,48 @@ timer_function =
     end,
 })
 --}}}
----- {{{ CPU load
---local cpuwidget =  wibox.widget.textbox()
---vicious.register(cpuwidget, vicious.widgets.cpu,
---function (widget ,args)
---    return string.format(span("❖") .. "%2d%%",args[1])
---end)
---
---local cpuwidget_t  = awful.tooltip({
---objects = { cpuwidget },
---timer_function = 
---    function()
---        local args = vicious.widgets.cpu()
---        return string.format("CPU Detail:\n1:\t%2d%%\n2:\t%2d%%\n3:\t%2d%%\n4:\t%2d%%",
---        args[2],args[3],args[4],args[5])
---    end,
---})
----- }}}
----- {{{ Mem load
---local memwidget = wibox.widget.textbox()
---vicious.register(memwidget, vicious.widgets.mem,
---function (widget ,args)
---    return string.format(span("▯") .. "%2d%% ",args[1])
---end)
---
---local memwidget_t  = awful.tooltip({
---objects = { memwidget },
---timer_function = function()
---    local args = vicious.widgets.mem()
---    return string.format("Memory Detail:\nTotal Mem:\t%s\nMem Used:\t%s\nFree Mem:\t%s\nSwap Used:\t%s", 
---        args[3],args[2],args[4],args[6])
---end,
---})
----- }}}
----- {{{ CPU temperature
-----local thermalwidget = widget({ type = "textbox" })
-----vicious.register(thermalwidget, vicious.widgets.thermal,  span("T:")  .. " $1°C", 20, "thermal_zone0")
----- }}}
+-- {{{ CPU load
+local cpuwidget =  wibox.widget.textbox()
+vicious.register(cpuwidget, vicious.widgets.cpu,
+function (widget ,args)
+    return string.format(span("❖") .. "%2d%%",args[1])
+end)
+
+local cpuwidget_t  = awful.tooltip({
+objects = { cpuwidget },
+timer_function = 
+    function()
+        local args = vicious.widgets.cpu()
+        return string.format("CPU Detail:\n1:\t%2d%%\n2:\t%2d%%\n3:\t%2d%%\n4:\t%2d%%",
+        args[2],args[3],args[4],args[5])
+    end,
+})
+-- }}}
+-- {{{ Mem load
+local memwidget = wibox.widget.textbox()
+vicious.register(memwidget, vicious.widgets.mem,
+function (widget ,args)
+    return string.format(span("▯") .. "%2d%% ",args[1])
+end)
+
+local memwidget_t  = awful.tooltip({
+objects = { memwidget },
+timer_function = function()
+    local args = vicious.widgets.mem()
+    return string.format("Memory Detail:\nTotal Mem:\t%s\nMem Used:\t%s\nFree Mem:\t%s\nSwap Used:\t%s", 
+        args[3],args[2],args[4],args[6])
+end,
+})
+-- }}}
+-- {{{ CPU temperature
+--local thermalwidget = widget({ type = "textbox" })
+--vicious.register(thermalwidget, vicious.widgets.thermal,  span("T:")  .. " $1°C", 20, "thermal_zone0")
+-- }}}
 -- {{{ Volume widget
 local volwidget =  wibox.widget.textbox()
 --vicious.register(volwidget, vicious.widgets.volume, " $1% ", 1,"Master")
 
-volwidget:set_markup(span(""))
+volwidget:set_text( span(""))
 function voltext(vol,mute) --{{{
     -- ' - ♩ ♪ ♫ ♬ '
     if  mute =="true" then
@@ -471,7 +470,7 @@ function getvol() --{{{
     return vol, mute
 end --}}}
 local vol,mute = getvol()
-volwidget:set_markup( voltext(vol,mute))
+volwidget:set_text( voltext(vol,mute))
 volwidget:buttons(awful.util.table.join(
     awful.button({ }, 1, function()
         local vol,mute = getvol()
@@ -482,17 +481,17 @@ volwidget:buttons(awful.util.table.join(
             exes("pamixer --mute")
             m = "true"
         end
-        volwidget:set_markup( voltext(vol, m))
+        volwidget:set_text( voltext(vol, m))
     end),
     awful.button({ }, 4, function()
         exes("pamixer --increase 4")
         local vol,mute = getvol()
-        volwidget:set_markup( voltext(vol, mute))
+        volwidget:set_text( voltext(vol, mute))
     end),
     awful.button({ }, 5, function()
         exes("pamixer --decrease 4")
         local vol,mute = getvol()
-        volwidget:set_markup( voltext(vol, mute))
+        volwidget:set_text( voltext(vol, mute))
     end)
 ))
 local volwidget_t  = awful.tooltip({
@@ -503,186 +502,186 @@ timer_function = function()
 end,
 })
 -- }}}
----- {{{ Uptime
---uptimewidget =  wibox.widget.textbox()
---vicious.register(uptimewidget, vicious.widgets.uptime,
---        function (widget, args)
---            return string.format(span("⟳").."%2dh%2dm", 
---                args[2], args[3])
---        end, 61)
---uptime_t  = awful.tooltip({
---objects = { uptimewidget },
---timer_function = 
---    function()
---        local args = vicious.widgets.uptime()
---        return string.format("Uptime:\n%dd %2dh %2dm", 
---            args[1], args[2], args[3])
---    end,
---})
-----}}}
----- {{{ Lyric
-----local function lrc_worker(format, warg) --{{{
-----    -- assume 'lrcdis -m echo > /tmp/lrc &' is executing
-----    local f = io.popen("tail -1 /tmp/lrc ")
-----    local c = f:read("*line")
-----    f:close()
-----    if c==nil or c=="" then
-----        c = "---------------"
-----    end
-----    -- XXX wrong encoding in lyric will output invalid markup
-----    return {vicious.helpers.escape(c)}
-----    --return {c}
-----end --}}}
-----local lrcwidget = widget({ type = "textbox" })
-----vicious.register(lrcwidget, lrc_worker,
-----        function (widget, args)
-----            return  span("#") .. args[1] .. span("#")
-----        end,1)
---local lyric = nil
---
---function remove_lyric()
---    if lyric ~= nil then
---        naughty.destroy(lyric)
---        lyric = nil
+-- {{{ Uptime
+uptimewidget =  wibox.widget.textbox()
+vicious.register(uptimewidget, vicious.widgets.uptime,
+        function (widget, args)
+            return string.format(span("⟳").."%2dh%2dm", 
+                args[2], args[3])
+        end, 61)
+uptime_t  = awful.tooltip({
+objects = { uptimewidget },
+timer_function = 
+    function()
+        local args = vicious.widgets.uptime()
+        return string.format("Uptime:\n%dd %2dh %2dm", 
+            args[1], args[2], args[3])
+    end,
+})
+--}}}
+-- {{{ Lyric
+--local function lrc_worker(format, warg) --{{{
+--    -- assume 'lrcdis -m echo > /tmp/lrc &' is executing
+--    local f = io.popen("tail -1 /tmp/lrc ")
+--    local c = f:read("*line")
+--    f:close()
+--    if c==nil or c=="" then
+--        c = "---------------"
 --    end
---end
---
---function add_lyric()
---    remove_lyric()
---    run_background("mpdlyrics -n",function(txt)
---   lyric = naughty.notify({text=txt,
---        timeout = 0, hover_timeout = nil,
---        position="bottom_right",
---        width = 400,height=1000,font="monospace 11"})
---end)
---end
----- }}}
----- {{{ mpd
----- Initialize widget
---local mpdwidget =  wibox.widget.textbox()
---
----- Register widget
---vicious.register(mpdwidget, vicious.widgets.mpd,
---    function (widget, args)
---        if args["{state}"] == "Stop" then
---            return span("■ ") .. "Stopped"
---        else
---            local cmdf = io.popen("mpc")
---            local txt = ""
---
---            if cmdf == nil then
---                txt = span("▶ ") .. args["{Artist}"] .. 
---                    ' - '.. args["{Title}"]
---            else
---                local i = 1
---                for line in cmdf:lines() do
---                    if i == 2 then
---                        w = string.find(line, "%[paused%]")
---                        if w then
---                            txt = span("❚❚") .. args["{Artist}"] .. 
---                                ' - '.. args["{Title}"]
---                        end
---                        break
---                    end
---                    i = i + 1
---                end
---            end
---            cmdf:close()
---
---            if txt == "" then
---                return span("▶ ") .. args["{Artist}"] ..
---                    ' - '.. args["{Title}"]
---            else
---                return txt
---            end
---        end
---    end,
---10)
---
---mpdwidget:buttons(awful.util.table.join(
---    awful.button({ }, 1, function()
---        exes("mpc toggle")
---        vicious.force({ mpdwidget, })
---    end),
---    awful.button({ }, 2, add_lyric),
---    awful.button({ }, 3, function()
---        exes("mpc stop")
---        vicious.force({ mpdwidget, })
---    end),
---    awful.button({ }, 4, function()
---        exes("mpc prev")
---        vicious.force({ mpdwidget, })
---    end),
---    awful.button({ }, 5, function()
---        exes("mpc next")
---        vicious.force({ mpdwidget, })
---    end)
---))
---
---local mpdwidget_t  = awful.tooltip({
---    objects = { mpdwidget },
---    timer_function = function()
---        local cmdf = io.popen("mpc stats")
---        local txt = cmdf:read("*all")
---        cmdf:close()
---        local cmdf = io.popen("mpc status")
---        local txt2 = cmdf:read("*all")
---        cmdf:close()
---        txt3 = "\nWidget Control:\n\nLeft Click:\tToggle\nRight Click:\tStop\nScroll Up:\tPrev\nScroll Down:\tNext"
---        if txt =="" or txt == nil then
---            return txt3
---        else
---            return "Song Status:\n\n" .. txt2 .. "\nMPC Status:\n\n" .. txt .. txt3
---        end
---    end,
---})
-----}}}
----- {{{ net
---function netspd (spd) --{{{
---    return "{" .. conf.NET_INTERFACE .. " ".. spd .. "_kb}"
+--    -- XXX wrong encoding in lyric will output invalid markup
+--    return {vicious.helpers.escape(c)}
+--    --return {c}
 --end --}}}
---local netwidget =  wibox.widget.textbox()
---
----- Register widget
---vicious.register(netwidget, vicious.widgets.net,
---    function (widget, args)
---        return span("▲")  .. string.format("%4.1f",args[netspd("up")]) .. span("▼")  .. string.format("%4.1f",args[netspd("down")])
---    end )
---
---local netwidget_t  = awful.tooltip({
---objects = { netwidget },
---timer_function = function()
---    local args = vicious.widgets.net()
---    return string.format("Net Details:\nUp:\t%5.1fKB\nDown:\t%5.1fKB",args[netspd("up")],args[netspd("down")])
---end,
---})
-----}}}
----- battery --{{{
---local batwidget =  wibox.widget.textbox()
---
---vicious.register(batwidget, 
---    vicious.widgets.bat, 
---    function (wdiget, args)
---        return span("⊕")..args[2]
---    end, 
---61, "BAT0")
---battery_t = awful.tooltip({
---    objects = { batwidget },
---    timer_function = function()
---        local args = vicious.widgets.uptime()
---        return string.format(
---            "Battery:\n State:%s\nRemaining Time:%s",
---            args[1],args[3])
---    end,
---})
-----}}}
---
----- dock
----- Create a systray
---mysystray =  wibox.widget.systray()
---
----- }}}
---
+--local lrcwidget = widget({ type = "textbox" })
+--vicious.register(lrcwidget, lrc_worker,
+--        function (widget, args)
+--            return  span("#") .. args[1] .. span("#")
+--        end,1)
+local lyric = nil
+
+function remove_lyric()
+    if lyric ~= nil then
+        naughty.destroy(lyric)
+        lyric = nil
+    end
+end
+
+function add_lyric()
+    remove_lyric()
+    run_background("mpdlyrics -n",function(txt)
+   lyric = naughty.notify({text=txt,
+        timeout = 0, hover_timeout = nil,
+        position="bottom_right",
+        width = 400,height=1000,font="monospace 11"})
+end)
+end
+-- }}}
+-- {{{ mpd
+-- Initialize widget
+local mpdwidget =  wibox.widget.textbox()
+
+-- Register widget
+vicious.register(mpdwidget, vicious.widgets.mpd,
+    function (widget, args)
+        if args["{state}"] == "Stop" then
+            return span("■ ") .. "Stopped"
+        else
+            local cmdf = io.popen("mpc")
+            local txt = ""
+
+            if cmdf == nil then
+                txt = span("▶ ") .. args["{Artist}"] .. 
+                    ' - '.. args["{Title}"]
+            else
+                local i = 1
+                for line in cmdf:lines() do
+                    if i == 2 then
+                        w = string.find(line, "%[paused%]")
+                        if w then
+                            txt = span("❚❚") .. args["{Artist}"] .. 
+                                ' - '.. args["{Title}"]
+                        end
+                        break
+                    end
+                    i = i + 1
+                end
+            end
+            cmdf:close()
+
+            if txt == "" then
+                return span("▶ ") .. args["{Artist}"] ..
+                    ' - '.. args["{Title}"]
+            else
+                return txt
+            end
+        end
+    end,
+10)
+
+mpdwidget:buttons(awful.util.table.join(
+    awful.button({ }, 1, function()
+        exes("mpc toggle")
+        vicious.force({ mpdwidget, })
+    end),
+    awful.button({ }, 2, add_lyric),
+    awful.button({ }, 3, function()
+        exes("mpc stop")
+        vicious.force({ mpdwidget, })
+    end),
+    awful.button({ }, 4, function()
+        exes("mpc prev")
+        vicious.force({ mpdwidget, })
+    end),
+    awful.button({ }, 5, function()
+        exes("mpc next")
+        vicious.force({ mpdwidget, })
+    end)
+))
+
+local mpdwidget_t  = awful.tooltip({
+    objects = { mpdwidget },
+    timer_function = function()
+        local cmdf = io.popen("mpc stats")
+        local txt = cmdf:read("*all")
+        cmdf:close()
+        local cmdf = io.popen("mpc status")
+        local txt2 = cmdf:read("*all")
+        cmdf:close()
+        txt3 = "\nWidget Control:\n\nLeft Click:\tToggle\nRight Click:\tStop\nScroll Up:\tPrev\nScroll Down:\tNext"
+        if txt =="" or txt == nil then
+            return txt3
+        else
+            return "Song Status:\n\n" .. txt2 .. "\nMPC Status:\n\n" .. txt .. txt3
+        end
+    end,
+})
+--}}}
+-- {{{ net
+function netspd (spd) --{{{
+    return "{" .. conf.NET_INTERFACE .. " ".. spd .. "_kb}"
+end --}}}
+local netwidget =  wibox.widget.textbox()
+
+-- Register widget
+vicious.register(netwidget, vicious.widgets.net,
+    function (widget, args)
+        return span("▲")  .. string.format("%4.1f",args[netspd("up")]) .. span("▼")  .. string.format("%4.1f",args[netspd("down")])
+    end )
+
+local netwidget_t  = awful.tooltip({
+objects = { netwidget },
+timer_function = function()
+    local args = vicious.widgets.net()
+    return string.format("Net Details:\nUp:\t%5.1fKB\nDown:\t%5.1fKB",args[netspd("up")],args[netspd("down")])
+end,
+})
+--}}}
+-- battery --{{{
+local batwidget =  wibox.widget.textbox()
+
+vicious.register(batwidget, 
+    vicious.widgets.bat, 
+    function (wdiget, args)
+        return span("⊕")..args[2]
+    end, 
+61, "BAT0")
+battery_t = awful.tooltip({
+    objects = { batwidget },
+    timer_function = function()
+        local args = vicious.widgets.uptime()
+        return string.format(
+            "Battery:\n State:%s\nRemaining Time:%s",
+            args[1],args[3])
+    end,
+})
+--}}}
+
+-- dock
+-- Create a systray
+mysystray =  wibox.widget.systray()
+
+-- }}}
+
 -- {{{ Wibox Layout
 -- Create a wibox for each screen and add it
 mywibox = {}
@@ -761,72 +760,51 @@ for s = 1, screen.count() do
     ))
     -- Create a taglist widget
     mytaglist[s] = awful.widget.taglist(s, 
-        awful.widget.taglist.filter.noempty, mytaglist.buttons)
+        awful.widget.taglist.label.noempty, mytaglist.buttons)
 
     -- Create a tasklist widget
     mytasklist[s] = awful.widget.tasklist(s, awful.widget.tasklist.filter.currenttags, mytasklist.buttons) 
     -- Create the wibox
     mywibox[s] = awful.wibox({ position = "bottom", screen = s })
-
-    ---- Widgets that are aligned to the left
-    local left_layout = wibox.layout.fixed.horizontal()
-    left_layout:add(mylauncher)
-    left_layout:add(mytaglist[s])
-    left_layout:add(mypromptbox[s])
-
-    -- Widgets that are aligned to the right
-    local right_layout = wibox.layout.fixed.horizontal()
-    if s == 1 then right_layout:add(wibox.widget.systray()) end
-    right_layout:add(mytextclock)
-    right_layout:add(volwidget)
-    right_layout:add(mylayoutbox[s])
-
-    ---- Now bring it all together (with the tasklist in the middle)
-    local layout = wibox.layout.align.horizontal()
-    layout:set_left(left_layout)
-    layout:set_middle(mytasklist[s])
-    layout:set_right(right_layout)
-
-    mywibox[s]:set_widget(layout)
     ---- Add widgets to the wibox - order matters
-    --mywibox[s].widgets = {
-    --    {
-    --        mylauncher,
-    --        mytaglist[s],
-    --        mypromptbox[s],
-    --        layout = awful.widget.layout.horizontal.leftright
-    --    },
-    --    --my_bot_toggle,
-    --    mylayoutbox[s],
-    --    s == 1 and mysystray or nil,
-    --    mytextclock,
-    --    --volwidget,
-    --    --my_client_kill,
-    --    mytasklist[s],
-    --    layout = awful.widget.layout.horizontal.rightleft
-    --}
+    mywibox[s].widgets = {
+        {
+            mylauncher,
+            mytaglist[s],
+            mypromptbox[s],
+            layout = awful.widget.layout.horizontal.leftright
+        },
+        my_bot_toggle,
+        mylayoutbox[s],
+        s == 1 and mysystray or nil,
+        mytextclock,
+        volwidget,
+        --my_client_kill,
+        mytasklist[s],
+        layout = awful.widget.layout.horizontal.rightleft
+    }
 
-    ---- Create the wibox
-    --mybotwibox[s] = awful.wibox({ position = "top", screen = s })
-    ------ Add widgets to the wibox - order matters
-    --mybotwibox[s].widgets = {
-    --    {
-    --        --cpuwidget,
-    --        --memwidget,
-    --        --uptimewidget,
-    --        --spacer,
-    --        --netwidget,
-    --        --batwidget,
-    --        layout = awful.widget.layout.horizontal.leftright,
-    --    },
-    --    spacer,
-    --    --mpdwidget,
-    --    layout = awful.widget.layout.horizontal.rightleft
-    --}
-    --mybotwibox[s].visible = false
+    -- Create the wibox
+    mybotwibox[s] = awful.wibox({ position = "top", screen = s })
+    ---- Add widgets to the wibox - order matters
+    mybotwibox[s].widgets = {
+        {
+            cpuwidget,
+            memwidget,
+            uptimewidget,
+            spacer,
+            netwidget,
+            batwidget,
+            layout = awful.widget.layout.horizontal.leftright,
+        },
+        spacer,
+        mpdwidget,
+        layout = awful.widget.layout.horizontal.rightleft
+    }
+    mybotwibox[s].visible = false
 end --}}}
 --}}}
---
+
 -- {{{ Mouse bindings
 root.buttons(awful.util.table.join(
     awful.button({ }, 3, function () mymainmenu:toggle() end)
@@ -1222,4 +1200,4 @@ do
 end
 -- }}}
 
-exes(conf.WALLPAPER_CMD)
+exes(conf.wallpaper_cmd)
